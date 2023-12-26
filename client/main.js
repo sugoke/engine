@@ -11,25 +11,25 @@ import {
   dummyStockData
 } from '/imports/demoproduct.js';
 
-import * as blocks from '/imports/blocks.js';
+
 
 Template.hello.onCreated(function() {
 
   // Now you can use autocallableReverseConvertibleProduct directly
   let product = autocallableReverseConvertibleProduct;
-  let stockData = dummyStockData;
+
 
   console.log(product)
-  console.log(dummyStockData)
 
 
-//if product as observation dates :   observationType == specificDates
-
-const emptyTable = blocks.emptyTableCreation(autocallableReverseConvertibleProduct);
-console.log(emptyTable);
-
-// Loop through array
-
+  // Call the observationsDuringLife function and log the result
+  Meteor.call('observationsDuringLife', product, (error, result) => {
+       if (error) {
+         console.error("Error calling 'observationsDuringLife' method:", error);
+       } else {
+         console.log("Result:", result);
+       }
+     });
 
 });
 
