@@ -40,13 +40,11 @@ export const autocallableReverseConvertibleProduct = {
        observationType: "specificDates",
        subrules: [
          {
-           id: 0,
            checkCondition: "underlyingAboveCouponBarrier",
            actionIfTrue: "calculateAndPayCouponPlusMemoryBucketCoupons",
            actionIfFalse: "accumulateInMemoryBucket"
          },
          {
-           id: 1,
            checkCondition: "underlyingAboveAutocallBarrier",
            actionIfTrue: "earlyRedemption",
            actionIfFalse: "productContinues"

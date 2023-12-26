@@ -23,21 +23,14 @@ Template.hello.onCreated(function() {
   console.log(dummyStockData)
 
 
+//if product as observation dates :   observationType == specificDates
+
+const emptyTable = blocks.emptyTableCreation(autocallableReverseConvertibleProduct);
+console.log(emptyTable);
+
+// Loop through array
 
 
-
-
-
-
-  // Extract and log each observation date
-  const observationDates = autocallableReverseConvertibleProduct.monitoringDates.map(dateInfo => {
-    return {
-      monitoringDate: dateInfo.monitoringDate,
-      paymentDate: dateInfo.paymentDate
-    };
-  });
-
-  console.log(observationDates);
 });
 
 
