@@ -1,9 +1,9 @@
 export const autocallableReverseConvertibleProduct = {
   name: "Autocallable Reverse Convertible",
   underlyings: [
-    { name: "Capgemini SE", spotReferencePrice: 176.22, strikePrice: 105.73, couponLevel: 105.73, autocallLevel: 176.22 },
-    { name: "Schneider Electric SE", spotReferencePrice: 161.39, strikePrice: 96.83, couponLevel: 96.83, autocallLevel: 161.39 },
-    { name: "Vestas Wind Systems A/S", spotReferencePrice: 189.62, strikePrice: 113.77, couponLevel: 113.77, autocallLevel: 189.62 }
+    { name: "Capgemini SE", spotReferencePrice: 100, strikePrice: 60, couponLevel: 60, autocallLevel: 100 },
+    { name: "Schneider Electric SE", spotReferencePrice: 100, strikePrice: 60, couponLevel: 60, autocallLevel: 100 },
+    { name: "Vestas Wind Systems A/S", spotReferencePrice: 100, strikePrice: 60, couponLevel: 60, autocallLevel: 100 }
   ],
   issuePrice: "100.00%",
   nominalValue: 1000.00,

@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import * as AllFunctions from '/imports/functions.js';
 
 dummyStockData = {
   "22/09/2023": { "Capgemini_SE": 100, "Schneider_Electric_SE": 100, "Vestas_Wind_Systems": 100 },
@@ -17,70 +18,62 @@ dummyStockData = {
 
 
 
+// Map of function names to functions
+const functionMap = {
+  'worstPerforming': AllFunctions.worstPerforming,
+  'getConsideredUnderlying' : AllFunctions.getConsideredUnderlying,
+  'calculatePerformance': AllFunctions.calculatePerformance,
+  'underlyingAboveCouponBarrier': AllFunctions.underlyingAboveCouponBarrier,
+  'underlyingAboveAutocallBarrier': AllFunctions.underlyingAboveAutocallBarrier,
+  // ... other function mappings ...
+};
+
 Meteor.methods({
   'observationsDuringLife': function(product) {
+    const observationsTable = [];
 
-    if (product.observationType === "specificDates") {
-      let observationsTable = emptyTableCreation(product);
-     let memoryBucket = 0;
+    for (let i = 1; i < product.monitoringDates.length; i++) {
+      const dateInfo = product.monitoringDates[i];
+      const consideredUnderlying = AllFunctions.getConsideredUnderlying(product, dateInfo); // Call the function
 
+      // Get the initial date (assumed to be the first date in the stock data)
+      const initialDate = Object.keys(dummyStockData)[0];
 
-     observationsTable.forEach(observation => {
-       product.rules.duringLife.subrules.forEach(subrule => {
-         const stockData = dummyStockData[observation.monitoringDate];
-         const checkFunction = ruleFunctions[subrule.checkCondition];
+      // Calculate the underlying performance
+      const underlyingPerformance = AllFunctions.calculatePerformance(dummyStockData, consideredUnderlying, initialDate, dateInfo.monitoringDate);
 
-         if (typeof checkFunction === 'function') {
-           console.log(`Function found for checkCondition: ${subrule.checkCondition}`);
-           checkFunction(/* pass appropriate arguments here */);
-         } else {
-           console.log(`Function not found for checkCondition: ${subrule.checkCondition}`);
-         }
+      // Get the current price for the observation date
+      const currentPrice = dummyStockData[dateInfo.monitoringDate] ? dummyStockData[dateInfo.monitoringDate][consideredUnderlying] : null;
 
+      const observation = {
+        monitoringDate: dateInfo.monitoringDate,
+        paymentDate: dateInfo.paymentDate,
+        couponBarrier: dateInfo.couponLevel,
+        autocallLevel: dateInfo.autocallLevel,
+        consideredUnderlying: consideredUnderlying,
+        underlyingLevel: currentPrice, // Write the current price here
+        underlyingPerformance: underlyingPerformance.toFixed(2) + '%',
+      };
 
+      // Loop through each rule
 
-  //        if (conditionMet) {
-            // Dynamically call the actionIfTrue function
-  //          this[subrules.actionIfTrue](/* parameters */);
-  //        } else {
-            // Dynamically call the actionIfFalse function
-    //        this[subrules.actionIfFalse](/* parameters */);
-    //      }
+      for (let j = 0; j < product.rules.duringLife.subrules.length; j++) {
+        const subrule = product.rules.duringLife.subrules[j];
 
-          // Check for early redemption and break if needed
-  //        if (observation.earlyRedemption) {
-  //          return; // Break out of the loop
-  //        }
-        });
-      });
+        if (functionMap[subrule.checkCondition]) {
+          // Call the function dynamically and use checkCondition name as the column name
+          const result = functionMap[subrule.checkCondition](dummyStockData, consideredUnderlying, dateInfo.monitoringDate, dateInfo.couponLevel, dateInfo.autocallLevel, subrule.checkCondition);
 
-      return observationsTable;
+          // Add the result to the observation object with the checkCondition name as the column name
+          observation[subrule.checkCondition] = result;
+
+          // Store the result in the observation or perform any other action you need
+        }
+      }
+
+      observationsTable.push(observation);
     }
+
+    return observationsTable;
   }
 });
-
-
-
-
-////////////// FUNCTiONS ///////////////////////
-
-// Define emptyTableCreation as a regular function, not as a Meteor method
-const emptyTableCreation = (product) => {
-  return product.monitoringDates.map(dateInfo => {
-    return {
-      monitoringDate: dateInfo.monitoringDate,
-      paymentDate: dateInfo.paymentDate,
-      couponPaid: "",
-      earlyRedemption: ""
-    };
-  });
-};
-
-// Define these functions either in the same server file or import them if defined elsewhere
-const ruleFunctions = {
-  underlyingAboveCouponBarrier: function() {/*...*/},
-  calculateAndPayCouponPlusMemoryBucketCoupons: function(memoryBucket, couponRate, nominalValue) {/*...*/},
-  underlyingAboveAutocallBarrier: function(stockData, autocallLevel) {/*...*/},
-  earlyRedemption: function() {/*...*/},
-  productContinues: function() {/*...*/}
-};

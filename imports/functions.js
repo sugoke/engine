@@ -1,0 +1,97 @@
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function getConsideredUnderlying(product, dateInfo) {
+  switch (product.underlyingType) {
+    case 'worstPerforming':
+      // Implement logic to find the worst-performing stock here
+      let worstStock = null;
+      let maxDecrease = 0;
+
+      const initialDate = Object.keys(dummyStockData)[0]; // Assuming the first key is the initial date
+
+      for (const stock in dummyStockData[dateInfo.monitoringDate]) {
+        if (
+          dummyStockData[dateInfo.monitoringDate].hasOwnProperty(stock) &&
+          dummyStockData[initialDate].hasOwnProperty(stock)
+        ) {
+          const initialPrice = dummyStockData[initialDate][stock];
+          const currentPrice = dummyStockData[dateInfo.monitoringDate][stock];
+          const decrease = (initialPrice - currentPrice) / initialPrice;
+
+          if (worstStock === null || decrease > maxDecrease) {
+            maxDecrease = decrease;
+            worstStock = stock;
+          }
+        }
+      }
+
+      return worstStock;
+
+    case 'bestPerforming':
+      // Implement logic to find the best-performing stock here
+      let bestStock = null;
+      let maxIncrease = 0;
+
+      for (const stock in dummyStockData[dateInfo.monitoringDate]) {
+        if (dummyStockData[dateInfo.monitoringDate].hasOwnProperty(stock)) {
+          const initialPrice = dummyStockData[initialDate][stock];
+          const currentPrice = dummyStockData[dateInfo.monitoringDate][stock];
+          const increase = (currentPrice - initialPrice) / initialPrice;
+
+          if (bestStock === null || increase > maxIncrease) {
+            maxIncrease = increase;
+            bestStock = stock;
+          }
+        }
+      }
+
+      return bestStock;
+
+    default:
+      return 'Invalid underlyingType';
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Calculate performance function
+export function calculatePerformance(stockData, stockName, initialDate, observationDate) {
+  if (
+    stockData.hasOwnProperty(initialDate) &&
+    stockData[initialDate].hasOwnProperty(stockName) &&
+    stockData.hasOwnProperty(observationDate) &&
+    stockData[observationDate].hasOwnProperty(stockName)
+  ) {
+    const initialPrice = stockData[initialDate][stockName];
+    const observationPrice = stockData[observationDate][stockName];
+
+    const performance = ((observationPrice - initialPrice) / initialPrice) * 100;
+
+    return performance;
+  } else {
+    return `Data for ${stockName} on either ${initialDate} or ${observationDate} is missing.`;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function underlyingAboveCouponBarrier(dummyStockData, consideredUnderlying, monitoringDate, couponLevel, autocallLevel, checkCondition) {
+
+  console.log(checkCondition)
+  console.log(consideredUnderlying)
+  console.log(monitoringDate)
+  console.log(couponLevel)
+  console.log(autocallLevel)
+
+
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function underlyingAboveAutocallBarrier(dummyStockData, consideredUnderlying, monitoringDate, couponLevel, autocallLevel, checkCondition) {
+
+  console.log(checkCondition)
+
+
+}
