@@ -17,21 +17,24 @@ export const autocallableReverseConvertibleProduct = {
   leveraged: true,
   observationType: "specificDates",  // or "continuous"
   underlyingType: "worstPerforming",  // or "bestPerforming", "average", "single"
-
+  
+  memoryCoupon: true,
+  memoryLock: true,
+  oneStar: false,
 
   monitoringDates: [
     { monitoringDate: '22/09/2023', paymentDate: '29/09/2023', couponLevel: 60, autocallLevel: 100 },
     { monitoringDate: '22/12/2023', paymentDate: '29/12/2023', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '22/03/2024', paymentDate: '28/03/2024', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '21/06/2024', paymentDate: '28/06/2024', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '20/09/2024', paymentDate: '30/09/2024', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '20/12/2024', paymentDate: '30/12/2024', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '21/03/2025', paymentDate: '31/03/2025', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '20/06/2025', paymentDate: '30/06/2025', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '19/09/2025', paymentDate: '29/09/2025', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '19/12/2025', paymentDate: '29/12/2025', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '20/03/2026', paymentDate: '30/03/2026', couponLevel: 60, autocallLevel: 100 },
-    { monitoringDate: '19/06/2026', paymentDate: '29/06/2026', couponLevel: 60, autocallLevel: 100 }
+    { monitoringDate: '22/03/2024', paymentDate: '28/03/2024', couponLevel: 60, autocallLevel: 95 },
+    { monitoringDate: '21/06/2024', paymentDate: '28/06/2024', couponLevel: 60, autocallLevel: 95 },
+    { monitoringDate: '20/09/2024', paymentDate: '30/09/2024', couponLevel: 60, autocallLevel: 90 },
+    { monitoringDate: '20/12/2024', paymentDate: '30/12/2024', couponLevel: 60, autocallLevel: 90 },
+    { monitoringDate: '21/03/2025', paymentDate: '31/03/2025', couponLevel: 60, autocallLevel: 85 },
+    { monitoringDate: '20/06/2025', paymentDate: '30/06/2025', couponLevel: 60, autocallLevel: 85 },
+    { monitoringDate: '19/09/2025', paymentDate: '29/09/2025', couponLevel: 60, autocallLevel: 80 },
+    { monitoringDate: '19/12/2025', paymentDate: '29/12/2025', couponLevel: 60, autocallLevel: 80 },
+    { monitoringDate: '20/03/2026', paymentDate: '30/03/2026', couponLevel: 60, autocallLevel: 75 },
+    { monitoringDate: '19/06/2026', paymentDate: '29/06/2026', couponLevel: 60, autocallLevel: 75 }
   ],
 
   rules: {
@@ -41,8 +44,8 @@ export const autocallableReverseConvertibleProduct = {
        subrules: [
          {
            checkCondition: "underlyingAboveCouponBarrier",
-           actionIfTrue: "calculateAndPayCouponPlusMemoryBucketCoupons",
-           actionIfFalse: "accumulateInMemoryBucket"
+           actionIfTrue: "couponPaid",
+           actionIfFalse: "noCouponPaid"
          },
          {
            checkCondition: "underlyingAboveAutocallBarrier",

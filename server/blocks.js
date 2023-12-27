@@ -5,7 +5,7 @@ dummyStockData = {
   "22/09/2023": { "Capgemini_SE": 100, "Schneider_Electric_SE": 100, "Vestas_Wind_Systems": 100 },
   "22/12/2023": { "Capgemini_SE": 95.96, "Schneider_Electric_SE": 105.28, "Vestas_Wind_Systems": 161.97 },
   "22/03/2024": { "Capgemini_SE": 113.44, "Schneider_Electric_SE": 100.67, "Vestas_Wind_Systems": 166.08 },
-  "21/06/2024": { "Capgemini_SE": 168.25, "Schneider_Electric_SE": 174.46, "Vestas_Wind_Systems": 127.24 },
+  "21/06/2024": { "Capgemini_SE": 168.25, "Schneider_Electric_SE": 174.46, "Vestas_Wind_Systems": 55 },
   "20/09/2024": { "Capgemini_SE": 103.69, "Schneider_Electric_SE": 81.86, "Vestas_Wind_Systems": 164.45 },
   "20/12/2024": { "Capgemini_SE": 125.79, "Schneider_Electric_SE": 152.31, "Vestas_Wind_Systems": 171.44 },
   "21/03/2025": { "Capgemini_SE": 138.82, "Schneider_Electric_SE": 171.37, "Vestas_Wind_Systems": 80.67 },
@@ -25,6 +25,7 @@ const functionMap = {
   'calculatePerformance': AllFunctions.calculatePerformance,
   'underlyingAboveCouponBarrier': AllFunctions.underlyingAboveCouponBarrier,
   'underlyingAboveAutocallBarrier': AllFunctions.underlyingAboveAutocallBarrier,
+  'couponPaid': AllFunctions.couponPaid,
   // ... other function mappings ...
 };
 
@@ -33,23 +34,23 @@ Meteor.methods({
     const observationsTable = [];
 
     for (let i = 1; i < product.monitoringDates.length; i++) {
-      const dateInfo = product.monitoringDates[i];
-      const consideredUnderlying = AllFunctions.getConsideredUnderlying(product, dateInfo); // Call the function
+      const observationDetails = product.monitoringDates[i];
+      const consideredUnderlying = AllFunctions.getConsideredUnderlying(product, observationDetails); // Call the function
 
       // Get the initial date (assumed to be the first date in the stock data)
       const initialDate = Object.keys(dummyStockData)[0];
 
       // Calculate the underlying performance
-      const underlyingPerformance = AllFunctions.calculatePerformance(dummyStockData, consideredUnderlying, initialDate, dateInfo.monitoringDate);
+      const underlyingPerformance = AllFunctions.calculatePerformance(dummyStockData, consideredUnderlying, initialDate, observationDetails.monitoringDate);
 
       // Get the current price for the observation date
-      const currentPrice = dummyStockData[dateInfo.monitoringDate] ? dummyStockData[dateInfo.monitoringDate][consideredUnderlying] : null;
+      const currentPrice = dummyStockData[observationDetails.monitoringDate] ? dummyStockData[observationDetails.monitoringDate][consideredUnderlying] : null;
 
       const observation = {
-        monitoringDate: dateInfo.monitoringDate,
-        paymentDate: dateInfo.paymentDate,
-        couponBarrier: dateInfo.couponLevel,
-        autocallLevel: dateInfo.autocallLevel,
+        monitoringDate: observationDetails.monitoringDate,
+        paymentDate: observationDetails.paymentDate,
+        couponBarrier: observationDetails.couponLevel,
+        autocallLevel: observationDetails.autocallLevel,
         consideredUnderlying: consideredUnderlying,
         underlyingLevel: currentPrice, // Write the current price here
         underlyingPerformance: underlyingPerformance.toFixed(2) + '%',
@@ -62,12 +63,24 @@ Meteor.methods({
 
         if (functionMap[subrule.checkCondition]) {
           // Call the function dynamically and use checkCondition name as the column name
-          const result = functionMap[subrule.checkCondition](dummyStockData, consideredUnderlying, dateInfo.monitoringDate, dateInfo.couponLevel, dateInfo.autocallLevel, subrule.checkCondition);
+          const result = functionMap[subrule.checkCondition](observation);
 
           // Add the result to the observation object with the checkCondition name as the column name
           observation[subrule.checkCondition] = result;
 
-          // Store the result in the observation or perform any other action you need
+          //si le resultat est positif, on execute la regle
+
+          if (result) {
+
+          const resultActionIfTrue = functionMap[subrule.actionIfTrue](observation);
+
+          // Add the result to the observation object with the checkCondition name as the column name
+          observation[subrule.actionIfTrue] = resultActionIfTrue;
+
+
+          } else {
+
+            }
         }
       }
 

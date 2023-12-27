@@ -75,23 +75,33 @@ export function calculatePerformance(stockData, stockName, initialDate, observat
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export function underlyingAboveCouponBarrier(dummyStockData, consideredUnderlying, monitoringDate, couponLevel, autocallLevel, checkCondition) {
+export function underlyingAboveCouponBarrier(observation) {
 
-  console.log(checkCondition)
-  console.log(consideredUnderlying)
-  console.log(monitoringDate)
-  console.log(couponLevel)
-  console.log(autocallLevel)
+//console.log(observation)
 
+if(observation.underlyingLevel>= observation.couponBarrier) {
+
+  return true
+
+} else { return false
+}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function underlyingAboveAutocallBarrier(observation) {
+
+  //console.log(observation)
 
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export function underlyingAboveAutocallBarrier(dummyStockData, consideredUnderlying, monitoringDate, couponLevel, autocallLevel, checkCondition) {
+export function couponPaid(product) {
 
-  console.log(checkCondition)
 
+
+  return
 
 }
