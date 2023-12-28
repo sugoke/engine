@@ -17,10 +17,15 @@ export const autocallableReverseConvertibleProduct = {
   leveraged: true,
   observationType: "specificDates",  // or "continuous"
   underlyingType: "worstPerforming",  // or "bestPerforming", "average", "single"
-  
+
+  productAutocalled: false,
+  productExpired: false,
+
   memoryCoupon: true,
+  memoryBucket: 2,
   memoryLock: true,
   oneStar: false,
+
 
   monitoringDates: [
     { monitoringDate: '22/09/2023', paymentDate: '29/09/2023', couponLevel: 60, autocallLevel: 100 },

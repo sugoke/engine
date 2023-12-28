@@ -1,3 +1,5 @@
+import { memoryBucket } from '../server/blocks.js';
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,16 +77,18 @@ export function calculatePerformance(stockData, stockName, initialDate, observat
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export function underlyingAboveCouponBarrier(observation) {
+export function underlyingAboveCouponBarrier(observation, product) {
 
-//console.log(observation)
+  //console.log(observation)
 
-if(observation.underlyingLevel>= observation.couponBarrier) {
+  if (observation.underlyingLevel >= observation.couponBarrier) {
 
-  return true
+    return true
 
-} else { return false
-}
+  } else {
+
+    return false
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,15 +97,62 @@ export function underlyingAboveAutocallBarrier(observation) {
 
   //console.log(observation)
 
+  if (observation.underlyingLevel >= observation.autocallLevel) {
+
+    return true
+
+  } else {
+
+    return false
+  }
+
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export function couponPaid(product) {
+export function couponPaid(observation, product) {
 
+  if (product.memoryCoupon) {
 
+    //console.log("test bucket: " + memoryBucket)
 
-  return
+  return product.couponRate
 
+  } else {
+    return product.couponRate
+  }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function noCouponPaid(observation, product) {
+
+  if (product.memoryCoupon) {
+
+    console.log(memoryBucket)
+
+   //memoryBucket = memoryBucket + product.couponRate
+
+  return true
+
+  } else {
+
+  }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function earlyRedemption(observation, product) {
+
+return true
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function productContinues(observation, product) {
+
+return true
 }

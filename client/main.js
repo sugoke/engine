@@ -10,8 +10,15 @@ import {
   autocallableReverseConvertibleProduct,
   dummyStockData
 } from '/imports/demoproduct.js';
+import { Products } from '/imports/ProductsCollection.js';
+import { Mongo } from 'meteor/mongo';
 
+Meteor.subscribe('allProducts');
 
+Tracker.autorun(() => {
+  const products = Products.find().fetch();
+  console.log('Products:', products);
+});
 
 Template.hello.onCreated(function() {
 
@@ -41,4 +48,12 @@ Template.hello.helpers({
 
 Template.hello.events({
 
+});
+
+
+Template.reporting.helpers({
+  reports() {
+    // Assuming the report data is stored in a variable like `reportData`
+    return reportData;
+  }
 });
